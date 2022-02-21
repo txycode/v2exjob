@@ -1,6 +1,6 @@
 
-from crawler import get_job_page, get_topic_detail
-from processor import job_page_processor, topic_page_processor
+from crawler import get_job_page
+from processor import job_page_processor
 import asyncio
 import json
 
@@ -8,12 +8,17 @@ async def main():
 
     start = 1
     end = 2500
-    success, failed = await get_job_page(start, end, job_page_processor)
-    # print(success, failed)
-    with open('success.json', 'w') as f:
-        json.dump(success, f)
-    with open('failed.json', 'w') as f:
-        json.dump(failed, f)
+    duration = 50
+    failed_set = set()
+    while start < end:
+        success, failed = await get_job_page(start, start + duration, job_page_processor)
+        failed_set.union(failed)
+        with open(f'success{start}.json', 'a') as f:
+            json.dump(success, f)
+        start += 50
+    with open(f'failed.json', 'w') as f:
+        json.dump(failed_set)
+        
 
 
 
