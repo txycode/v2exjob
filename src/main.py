@@ -15,7 +15,7 @@ async def fetch_job_page():
     while start < end:
         success, failed = await get_job_page(start, start + duration, job_page_processor)
         failed_set = failed_set.union(failed)
-        with open(f'{current_path}/data/success{start}.json', 'a') as f:
+        with open(f'{current_path}/data/success{start}.json', 'w') as f:
             json.dump(success, f)
         start += 50
     with open(f'{current_path}/data/failed.json', 'w') as f:
@@ -37,5 +37,5 @@ async def fetch_topic_detail():
             json.dump(failed_set, f)
             failed_set = set()
 
-
+asyncio.get_event_loop().run_until_complete(fetch_job_page())
 asyncio.get_event_loop().run_until_complete(fetch_topic_detail())

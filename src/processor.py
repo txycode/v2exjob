@@ -30,7 +30,7 @@ def topic_page_processor(html: HTML, json: dict) -> dict:
     clicks = 0
     if small:
         for st in small[0].contents:
-            r = pattern.search(st)
+            r = pattern.search(str(st))
             if r:
                 clicks = int(r.groups()[0])
     topic = Topic(
