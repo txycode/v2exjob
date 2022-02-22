@@ -2,6 +2,9 @@ from bs4 import BeautifulSoup
 from config import *
 from datetime import datetime
 from model import Topic
+import re
+
+pattern = re.compile(r'(?P<clcik>\d+) 次点击')
 
 def job_page_processor(html: HTML):
     bf = BeautifulSoup(html)
@@ -23,16 +26,13 @@ def job_page_processor(html: HTML):
 
 def topic_page_processor(html: HTML, json: dict) -> dict:
     bf = BeautifulSoup(html)
-    small = bf.find_all("small", {"class": "gray"})[0]
-    clicks = []
-    for st in small.contents:
-        if '次点击' in st:
-            for c in st:
-                if c.isdigit():
-                    clicks.append(c)
-            break
-    
-    clicks = int(''.join(clicks))
+    small = bf.find_all("small", {"class": "gray"})
+    clicks = 0
+    if small:
+        for st in small[0].contents:
+            r = pattern.search(st)
+            if r:
+                clicks = int(r.groups()[0])
     topic = Topic(
         id = json.get('id'),
         create_time=json.get('created'),

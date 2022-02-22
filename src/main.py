@@ -15,10 +15,10 @@ async def fetch_job_page():
     while start < end:
         success, failed = await get_job_page(start, start + duration, job_page_processor)
         failed_set = failed_set.union(failed)
-        with open(f'data/success{start}.json', 'a') as f:
+        with open(f'{current_path}/data/success{start}.json', 'a') as f:
             json.dump(success, f)
         start += 50
-    with open(f'data/failed.json', 'w') as f:
+    with open(f'{current_path}/data/failed.json', 'w') as f:
         json.dump(failed_set, f)
 
 async def fetch_topic_detail():
@@ -27,12 +27,13 @@ async def fetch_topic_detail():
         with open(f'{current_path}/data/success{i}.json', 'r') as f:
             res = json.load(f)
             for topics in res.values():
-                success, failed = await get_topic_detail(topics, topic_page_processor)
+                success, failed = await get_topic_detail(topics, topic_page_processor, 2)
                 failed_set = failed_set.union(failed)
                 for topic_id in success.keys():
-                    with open(f'data/topic_{topic_id}.json', 'w') as w:
-                        json.dump(success[topic_id], w)
-        with open(f'data/missing_topic{i}.json', 'w') as f:
+                    with open(f'{current_path}/data/topic_{topic_id}.json', 'w') as w:
+                        success[topic_id]['create_datetime'] = str(success[topic_id]['create_datetime'])
+                        json.dump(success[topic_id], w, ensure_ascii=False)
+        with open(f'{current_path}/data/missing_topic{i}.json', 'w') as f:
             json.dump(failed_set, f)
             failed_set = set()
 

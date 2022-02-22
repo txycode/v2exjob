@@ -51,6 +51,7 @@ async def get_topic_detail(topic_ids: List[int], processor: Callable[[str, dict]
                         current = int(datetime.datetime.now().timestamp())
                         nxt = int(r.headers['x-rate-limit-reset'])
                         if nxt > current:
+                            print(f"await {nxt - current} seconds")
                             await asyncio.sleep(nxt - current)
                         else:
                             failed.add(topic_id)
