@@ -27,7 +27,7 @@ def topic_page_processor(html: HTML, json: dict) -> dict:
     clicks = []
     for st in small.contents:
         if '次点击' in st:
-            for c in small.st:
+            for c in st:
                 if c.isdigit():
                     clicks.append(c)
             break
