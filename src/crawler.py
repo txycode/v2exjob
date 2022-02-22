@@ -31,7 +31,7 @@ async def get_job_page(start:int, end: int, processor: Callable[[str], dict], ti
     return sucess, failed
     
                 
-async def get_topic_detail(topic_ids: List[int], processor: Callable[[str, dict], dict], timegap: SECOND=30):
+async def get_topic_detail(topic_ids: List[int], processor: Callable[[str, dict], dict], timegap: SECOND=15):
     failed = set()
     sucess = {}
     conn = ProxyConnector(remote_resolve=True)
@@ -56,10 +56,11 @@ async def get_topic_detail(topic_ids: List[int], processor: Callable[[str, dict]
                             failed.add(topic_id)
                 ua = random.choice(USER_AGENT)
                 async with sess.get(url, headers={'user-agent': ua}, proxy=f'socks5://{host}:{port}') as r:
-                    html = await r.json()
-                sucess[topic_id] = processor(html, json)
+                    html = await r.text()
+                sucess[topic_id] = processor(html, json[0])
             except Exception as e:
-                print(topic_id, traceback.format_exception(e))
+                print(url, str(e))
+                traceback.print_exc()
                 failed.add(topic_id)
             await asyncio.sleep(timegap)
     return sucess, failed

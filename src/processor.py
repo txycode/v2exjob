@@ -25,9 +25,12 @@ def topic_page_processor(html: HTML, json: dict) -> dict:
     bf = BeautifulSoup(html)
     small = bf.find_all("small", {"class": "gray"})[0]
     clicks = []
-    for c in small.contents[3]:
-        if c.isdigit():
-            clicks.append(c)
+    for st in small.contents:
+        if '次点击' in st:
+            for c in small.st:
+                if c.isdigit():
+                    clicks.append(c)
+            break
     
     clicks = int(''.join(clicks))
     topic = Topic(

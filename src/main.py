@@ -1,10 +1,12 @@
 
-from crawler import get_job_page
-from processor import job_page_processor
+from crawler import get_job_page, get_topic_detail
+from processor import job_page_processor, topic_page_processor
 import asyncio
 import json
+import os
+current_path = os.path.dirname(os.path.abspath(__file__))
 
-async def main():
+async def fetch_job_page():
 
     start = 1
     end = 2500
@@ -13,13 +15,26 @@ async def main():
     while start < end:
         success, failed = await get_job_page(start, start + duration, job_page_processor)
         failed_set = failed_set.union(failed)
-        with open(f'success{start}.json', 'a') as f:
+        with open(f'data/success{start}.json', 'a') as f:
             json.dump(success, f)
         start += 50
-    with open(f'failed.json', 'w') as f:
+    with open(f'data/failed.json', 'w') as f:
         json.dump(failed_set, f)
-        
+
+async def fetch_topic_detail():
+    failed_set = set()
+    for i in range(1, 2500, 500):
+        with open(f'{current_path}/data/success{i}.json', 'r') as f:
+            res = json.load(f)
+            for topics in res.values():
+                success, failed = await get_topic_detail(topics, topic_page_processor)
+                failed_set = failed_set.union(failed)
+                for topic_id in success.keys():
+                    with open(f'data/topic_{topic_id}.json', 'w') as w:
+                        json.dump(success[topic_id], w)
+        with open(f'data/missing_topic{i}.json', 'w') as f:
+            json.dump(failed_set, f)
+            failed_set = set()
 
 
-
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.get_event_loop().run_until_complete(fetch_topic_detail())
