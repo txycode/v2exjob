@@ -12,12 +12,12 @@ async def main():
     failed_set = set()
     while start < end:
         success, failed = await get_job_page(start, start + duration, job_page_processor)
-        failed_set.union(failed)
+        failed_set = failed_set.union(failed)
         with open(f'success{start}.json', 'a') as f:
             json.dump(success, f)
         start += 50
     with open(f'failed.json', 'w') as f:
-        json.dump(failed_set)
+        json.dump(failed_set, f)
         
 
 
