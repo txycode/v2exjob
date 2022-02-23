@@ -19,7 +19,7 @@ async def fetch_job_page():
             json.dump(success, f)
         start += 50
     with open(f'{current_path}/data/failed.json', 'w') as f:
-        json.dump(failed_set, f)
+        json.dump(list(failed_set), f)
 
 async def fetch_topic_detail():
     failed_set = set()
@@ -30,11 +30,11 @@ async def fetch_topic_detail():
                 success, failed = await get_topic_detail(topics, topic_page_processor, 2)
                 failed_set = failed_set.union(failed)
                 for topic_id in success.keys():
-                    with open(f'{current_path}/data/topic_{topic_id}.json', 'w') as w:
+                    with open(f'{current_path}/data/topic/topic_{topic_id}.json', 'w') as w:
                         success[topic_id]['create_datetime'] = str(success[topic_id]['create_datetime'])
                         json.dump(success[topic_id], w, ensure_ascii=False)
-        with open(f'{current_path}/data/missing_topic{i}.json', 'w') as f:
-            json.dump(failed_set, f)
+        with open(f'{current_path}/data/missing_topic.json', 'a') as f:
+            json.dump(list(failed_set), f)
             failed_set = set()
 
 asyncio.get_event_loop().run_until_complete(fetch_job_page())
