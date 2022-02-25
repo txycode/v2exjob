@@ -40,3 +40,6 @@ USER_AGENT = [
     "Mozilla/5.0 (Linux; U; Android 2.2.1; zh-cn; HTC_Wildfire_A3333 Build/FRG83D) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1",
     "Mozilla/5.0 (Linux; U; Android 2.3.7; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1"
 ]
+
+PRETRAINED_MODEL_NAME = "bert-base-chinese"
+AUTO_MODEL_NAME = 'ckiplab/bert-base-chinese-ws'
